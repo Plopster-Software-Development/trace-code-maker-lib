@@ -17,7 +17,9 @@
     "minimum-stability": "stable",
     "require": {
         "illuminate/database": "^10.48.20",
-        "illuminate/http": "^10.48.20",
+        "illuminate/http": "^10.48.20"
+    },
+    "require-dev": {
         "illuminate/support": "^10.48.20"
     }
 }
