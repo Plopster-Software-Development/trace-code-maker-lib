@@ -1,6 +1,6 @@
 {
     "name": "plopster/trace-code-maker",
-    "description": "A very simple library for creating trace codes dinamycally according to the class name, method name and http code, then it'll be possible to save the code in the database to create a trace code wiki",
+    "description": "A very simple Laravel library designed to create and manage unique trace codes that can be used to monitor, log, and trace errors or responses within a service. The library allows for fetching an existing trace code based on provided parameters or creating a new one if it does not exist.",
     "type": "library",
     "license": "MIT",
     "autoload": {
