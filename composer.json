@@ -1,0 +1,23 @@
+{
+    "name": "plopster/trace-code-maker",
+    "description": "A very simple library for creating trace codes dinamycally according to the class name, method name and http code, then it'll be possible to save the code in the database to create a trace code wiki",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Plopster\\TraceCodeMaker\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "nicodav28",
+            "email": "nicolas.estevez@plopster.com.co"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "illuminate/database": "^10.14.1",
+        "illuminate/http": "^10.48",
+        "illuminate/support": "^10.48"
+    }
+}
