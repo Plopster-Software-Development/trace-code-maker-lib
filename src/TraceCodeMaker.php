@@ -27,7 +27,9 @@ class TraceCodeMaker
         $methodName ??= $trace[0]['function'];
         $className ??= $trace[0]['class'];
 
-        $existingTraceCode = $this->findExistingTraceCode($service, $httpCode, $methodName, $className);
+        $description ??= Response::$statusTexts[$this->castToInt($httpCode)];
+
+        $existingTraceCode = $this->findExistingTraceCode($service, $httpCode, $methodName, $className, $description);
 
         if ($existingTraceCode) {
             return $this->createSuccessResponse($existingTraceCode->trace_code);
@@ -47,13 +49,14 @@ class TraceCodeMaker
      * @param  string      $className  The name of the class where the trace code is being generated.
      * @return object|null             The existing trace code object if found, otherwise null.
      */
-    private function findExistingTraceCode(string $service, string|int $httpCode, string $methodName, string $className): ?object
+    private function findExistingTraceCode(string $service, string|int $httpCode, string $methodName, string $className, string $description): ?object
     {
         return DB::table('trace_codes')
             ->where('service', $service)
             ->where('http_code', $httpCode)
             ->where('method', $methodName)
             ->where('class', $className)
+            ->where('description', $description)
             ->first();
     }
 
@@ -89,8 +92,6 @@ class TraceCodeMaker
     private function saveTraceCode(string $service, string|int $httpCode, string $methodName, string $className, string $traceCode, ?string $description = null): array
     {
         try {
-            $description ??= Response::$statusTexts[$this->castToInt($httpCode)];
-
             $inserted = DB::table('trace_codes')->insert([
                 'id'          => Str::uuid()->toString(),
                 'trace_code'  => $traceCode,
