@@ -15,13 +15,18 @@ class TraceCodeMaker
      *
      * @param  string      $service      The name of the service generating the trace code.
      * @param  string|int  $httpCode     The HTTP status code associated with the trace code.
-     * @param  string      $methodName   The name of the method where the trace code is being generated.
-     * @param  string      $className    The name of the class where the trace code is being generated.
      * @param  string|null $description  An optional description for the trace code.
+     * @param  string|null     $methodName   The name of the method where the trace code is being generated.
+     * @param  string|null     $className    The name of the class where the trace code is being generated.
      * @return array                     An array containing the trace code or an error message.
      */
-    public function fetchOrCreateTraceCode(string $service, string|int $httpCode, string $methodName, string $className, ?string $description = null): array
+    public function fetchOrCreateTraceCode(string $service, string|int $httpCode, ?string $description = null, ?string $methodName = null, ?string $className = null): array
     {
+        $trace = debug_backtrace();
+
+        $methodName ??= $trace[0]['function'];
+        $className ??= $trace[0]['class'];
+
         $existingTraceCode = $this->findExistingTraceCode($service, $httpCode, $methodName, $className);
 
         if ($existingTraceCode) {
@@ -84,7 +89,7 @@ class TraceCodeMaker
     private function saveTraceCode(string $service, string|int $httpCode, string $methodName, string $className, string $traceCode, ?string $description = null): array
     {
         try {
-            $description = $description ?? Response::$statusTexts[$this->castToInt($httpCode)];
+            $description ??= Response::$statusTexts[$this->castToInt($httpCode)];
 
             $inserted = DB::table('trace_codes')->insert([
                 'id'          => Str::uuid()->toString(),
