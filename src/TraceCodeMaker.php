@@ -20,13 +20,8 @@ class TraceCodeMaker
      * @param  string|null     $className    The name of the class where the trace code is being generated.
      * @return array                     An array containing the trace code or an error message.
      */
-    public function fetchOrCreateTraceCode(string $service, string|int $httpCode, ?string $description = null, ?string $methodName = null, ?string $className = null): array
+    public function fetchOrCreateTraceCode(string $service, string|int $httpCode, string $methodName, string $className, ?string $description = null): array
     {
-        $trace = debug_backtrace();
-
-        $methodName ??= $trace[0]['function'];
-        $className ??= $trace[0]['class'];
-
         $description ??= Response::$statusTexts[$this->castToInt($httpCode)];
 
         $existingTraceCode = $this->findExistingTraceCode($service, $httpCode, $methodName, $className, $description);
