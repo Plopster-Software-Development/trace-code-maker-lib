@@ -20,19 +20,19 @@ class TraceCodeMaker
      * @param  string|null     $className    The name of the class where the trace code is being generated.
      * @return array                     An array containing the trace code or an error message.
      */
-    public function fetchOrCreateTraceCode(string $service, string|int $httpCode, string $methodName, string $className, ?string $description = null): array
+    public static function fetchOrCreateTraceCode(string $service, string|int $httpCode, string $methodName, string $className, ?string $description = null): array
     {
-        $description ??= Response::$statusTexts[$this->castToInt($httpCode)];
+        $description ??= Response::$statusTexts[self::castToInt($httpCode)];
 
-        $existingTraceCode = $this->findExistingTraceCode($service, $httpCode, $methodName, $className, $description);
+        $existingTraceCode = self::findExistingTraceCode($service, $httpCode, $methodName, $className, $description);
 
         if ($existingTraceCode) {
-            return $this->createSuccessResponse($existingTraceCode->trace_code);
+            return self::createSuccessResponse($existingTraceCode->trace_code);
         }
 
-        $traceCode = $this->generateTraceCode($service, $httpCode, $methodName, $className);
+        $traceCode = self::generateTraceCode($service, $httpCode, $methodName, $className);
 
-        return $this->saveTraceCode($service, $httpCode, $methodName, $className, $traceCode, $description);
+        return self::saveTraceCode($service, $httpCode, $methodName, $className, $traceCode, $description);
     }
 
     /**
@@ -44,7 +44,7 @@ class TraceCodeMaker
      * @param  string      $className  The name of the class where the trace code is being generated.
      * @return object|null             The existing trace code object if found, otherwise null.
      */
-    private function findExistingTraceCode(string $service, string|int $httpCode, string $methodName, string $className, string $description): ?object
+    private static function findExistingTraceCode(string $service, string|int $httpCode, string $methodName, string $className, string $description): ?object
     {
         return DB::table('trace_codes')
             ->where('service', $service)
@@ -64,13 +64,14 @@ class TraceCodeMaker
      * @param  string      $className  The name of the class where the trace code is being generated.
      * @return string                  The generated trace code.
      */
-    private function generateTraceCode(string $service, string|int $httpCode, string $methodName, string $className): string
+    private static function generateTraceCode(string $service, string|int $httpCode, string $methodName, string $className): string
     {
         $serviceCode = strtoupper(substr($service, 0, 3));
         $methodHash = substr(md5($className . '.' . $methodName), 0, 5);
-        $uniqueId = substr(time(), -3);
+        $randomSuffix = strtoupper(Str::random(4));
+        $timestamp = now()->format('ymdHis');
 
-        return "{$serviceCode}-{$httpCode}-{$methodHash}-{$uniqueId}";
+        return "{$serviceCode}-{$httpCode}-{$methodHash}-{$timestamp}{$randomSuffix}";
     }
 
     /**
@@ -84,7 +85,7 @@ class TraceCodeMaker
      * @param  string|null $description  An optional description for the trace code.
      * @return array                     An array containing the trace code or an error message.
      */
-    private function saveTraceCode(string $service, string|int $httpCode, string $methodName, string $className, string $traceCode, ?string $description = null): array
+    private static function saveTraceCode(string $service, string|int $httpCode, string $methodName, string $className, string $traceCode, ?string $description = null): array
     {
         try {
             $inserted = DB::table('trace_codes')->insert([
@@ -102,10 +103,10 @@ class TraceCodeMaker
                 throw new \Exception("Trace code could not be saved, please try again.");
             }
 
-            return $this->createSuccessResponse($traceCode);
+            return self::createSuccessResponse($traceCode);
 
         } catch (\Throwable $th) {
-            return $this->createErrorResponse($th->getMessage());
+            return self::createErrorResponse($th->getMessage());
         }
     }
     /**
@@ -114,7 +115,7 @@ class TraceCodeMaker
      * @param  string|int  $param  The parameter to be casted.
      * @return int                 The casted integer value.
      */
-    private function castToInt(string|int $param): int
+    private static function castToInt(string|int $param): int
     {
         return is_string($param) ? (int) $param : $param;
     }
@@ -125,7 +126,7 @@ class TraceCodeMaker
      * @param  string  $traceCode  The trace code to be included in the response.
      * @return array               An array indicating success and containing the trace code.
      */
-    private function createSuccessResponse(string $traceCode): array
+    private static function createSuccessResponse(string $traceCode): array
     {
         return [
             "error"     => false,
@@ -139,7 +140,7 @@ class TraceCodeMaker
      * @param  string  $message  The error message to be included in the response.
      * @return array             An array indicating an error and containing the error message.
      */
-    private function createErrorResponse(string $message): array
+    private static function createErrorResponse(string $message): array
     {
         return [
             "error"   => true,
