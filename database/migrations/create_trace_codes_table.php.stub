@@ -11,25 +11,27 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('trace_codes', function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->string('trace_code')->unique();
-            $table->string('service', 50);
-            $table->string('http_code', 10);
-            $table->string('method', 100);
-            $table->string('class', 255);
-            $table->text('description')->nullable();
-            $table->timestamp('timestamp');
-            $table->timestamps();
+        if (!Schema::hasTable('trace_codes')) {
+            Schema::create('trace_codes', function (Blueprint $table) {
+                $table->uuid('id')->primary();
+                $table->string('trace_code')->unique();
+                $table->string('service', 50);
+                $table->string('http_code', 10);
+                $table->string('method', 100);
+                $table->string('class', 255);
+                $table->text('description')->nullable();
+                $table->timestamp('timestamp');
+                $table->timestamps();
 
-            // Indexes for better performance
-            $table->index('trace_code', 'trace_code_index');
-            $table->index('service', 'service_index');
-            $table->index('http_code', 'http_code_index');
-            $table->index('method', 'method_index');
-            $table->index('class', 'class_index');
-            $table->index(['service', 'http_code', 'method', 'class'], 'trace_lookup_index');
-        });
+                // Indexes for better performance
+                $table->index('trace_code', 'trace_code_index');
+                $table->index('service', 'service_index');
+                $table->index('http_code', 'http_code_index');
+                $table->index('method', 'method_index');
+                $table->index('class', 'class_index');
+                $table->index(['service', 'http_code', 'method', 'class'], 'trace_lookup_index');
+            });
+        }
     }
 
     /**
