@@ -1,8 +1,9 @@
 {
     "name": "plopster/trace-code-maker",
-    "description": "A very simple Laravel library designed to create and manage unique trace codes that can be used to monitor, log, and trace errors or responses within a service. The library allows for fetching an existing trace code based on provided parameters or creating a new one if it does not exist.",
+    "description": "A Laravel library designed to create and manage unique trace codes for monitoring, logging, and tracing errors or responses within services. Easy installation with automated setup commands.",
     "type": "library",
     "license": "MIT",
+    "keywords": ["laravel", "trace", "logging", "monitoring", "error-tracking"],
     "autoload": {
         "psr-4": {
             "Plopster\\TraceCodeMaker\\": "src/"
@@ -15,5 +16,24 @@
         }
     ],
     "minimum-stability": "stable",
-    "require": {}
+    "require": {
+        "php": "^8.0",
+        "illuminate/support": "^9.0|^10.0|^11.0",
+        "illuminate/database": "^9.0|^10.0|^11.0",
+        "illuminate/console": "^9.0|^10.0|^11.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.0|^10.0",
+        "orchestra/testbench": "^7.0|^8.0|^9.0"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Plopster\\TraceCodeMaker\\TraceCodeMakerServiceProvider"
+            ],
+            "aliases": {
+                "TraceCodeMaker": "Plopster\\TraceCodeMaker\\Facades\\TraceCodeMaker"
+            }
+        }
+    }
 }

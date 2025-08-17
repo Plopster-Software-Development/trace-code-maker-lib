@@ -1,0 +1,42 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create(config('tracecodemaker.database.table', 'trace_codes'), function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->string('trace_code')->unique();
+            $table->string('service', 50);
+            $table->string('http_code', 10);
+            $table->string('method', 100);
+            $table->string('class', 255);
+            $table->text('description')->nullable();
+            $table->timestamp('timestamp');
+            $table->timestamps();
+
+            // Indexes for better performance
+            $table->index('trace_code', 'trace_code_index');
+            $table->index('service', 'service_index');
+            $table->index('http_code', 'http_code_index');
+            $table->index('method', 'method_index');
+            $table->index('class', 'class_index');
+            $table->index(['service', 'http_code', 'method', 'class'], 'trace_lookup_index');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists(config('tracecodemaker.database.table', 'trace_codes'));
+    }
+};
