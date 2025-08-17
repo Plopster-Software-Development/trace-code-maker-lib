@@ -13,12 +13,12 @@
 - ✅ **Configurable**: Extensive configuration options
 - ✅ **Validation**: Built-in parameter validation
 - ✅ **Database Agnostic**: Works with any Laravel-supported database
-- ✅ **Laravel 9, 10, 11 Support**: Compatible with modern Laravel versions
+- ✅ **Laravel 9, 10, 11, 12 Support**: Compatible with modern Laravel versions
 
 ## Requirements
 
-- Laravel 9.x, 10.x, or 11.x
-- PHP 8.0 or higher
+- Laravel 9.x, 10.x, 11.x, or 12.x
+- PHP 8.1 or higher
 
   
 
@@ -389,9 +389,10 @@ LOG_LEVEL=debug
 
 | Laravel Version | PHP Version | Package Version |
 |----------------|-------------|----------------|
-| 11.x           | 8.2+        | 1.0+           |
+| 12.x           | 8.1+        | 1.0+           |
+| 11.x           | 8.1+        | 1.0+           |
 | 10.x           | 8.1+        | 1.0+           |
-| 9.x            | 8.0+        | 1.0+           |
+| 9.x            | 8.1+        | 1.0+           |
 
 ## Contributing
 
@@ -440,7 +441,7 @@ If you encounter any issues or have questions:
 
 ### v1.0.0
 - Initial release
-- Laravel 9-11 support
+- Laravel 9-12 support
 - Auto-discovery support
 - Caching mechanism
 - Configurable validation
